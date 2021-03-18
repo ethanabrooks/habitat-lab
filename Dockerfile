@@ -1,53 +1,47 @@
-# Base image
-FROM nvidia/cudagl:10.1-devel-ubuntu16.04
+# We use the techniques described here:
+# (https://pythonspeed.com/articles/conda-docker-image-size/)
+# to minimize the impact of conda on our build. The goal here is to minimize image size
+# and re-implementation of build logic from habitat-sim and conda
+FROM  continuumio/miniconda3 AS build
 
-# Setup basic packages
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    git \
-    curl \
-    vim \
-    ca-certificates \
-    libjpeg-dev \
-    libpng-dev \
-    libglfw3-dev \
-    libglm-dev \
-    libx11-dev \
-    libomp-dev \
-    libegl1-mesa-dev \
-    pkg-config \
-    wget \
-    zip \
-    unzip &&\
-    rm -rf /var/lib/apt/lists/*
+# Install the package as normal:
+RUN conda create -n l2m
 
-# Install conda
-RUN curl -o ~/miniconda.sh -O  https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh  &&\
-    chmod +x ~/miniconda.sh &&\
-    ~/miniconda.sh -b -p /opt/conda &&\
-    rm ~/miniconda.sh &&\
-    /opt/conda/bin/conda install numpy pyyaml scipy ipython mkl mkl-include &&\
-    /opt/conda/bin/conda clean -ya
-ENV PATH /opt/conda/bin:$PATH
+# Install conda-pack (per https://pythonspeed.com/articles/conda-docker-image-size/)
+# and habitat-sim
+RUN conda install \
+  conda-pack \
+  habitat-sim==0.1.7 \
+  # for running habitat-sim headless:
+  headless==1.0=0 \
+  # required by habitat-sim and habitat-lab:
+  pytorch==1.8.0 \
+  # for torch:
+  cudatoolkit==11.1.1 \
+  -c conda-forge -c pytorch -c aihabitat
 
-# Install cmake
-RUN wget https://github.com/Kitware/CMake/releases/download/v3.14.0/cmake-3.14.0-Linux-x86_64.sh
-RUN mkdir /opt/cmake
-RUN sh /cmake-3.14.0-Linux-x86_64.sh --prefix=/opt/cmake --skip-license
-RUN ln -s /opt/cmake/bin/cmake /usr/local/bin/cmake
-RUN cmake --version
+# Use conda-pack to create a standalone enviornment
+# in /venv:
+RUN conda-pack -n l2m -o /tmp/env.tar && \
+  mkdir /venv && cd /venv && tar xf /tmp/env.tar && \
+  rm /tmp/env.tar
 
-# Conda environment
-RUN conda create -n habitat python=3.6 cmake=3.14.0
+# We've put venv in same path it'll be in final image,
+# so now fix up paths:
+RUN /venv/bin/conda-unpack
 
-# Setup habitat-sim
-RUN git clone --branch stable https://github.com/facebookresearch/habitat-sim.git
-RUN /bin/bash -c ". activate habitat; cd habitat-sim; pip install -r requirements.txt; python setup.py install --headless"
+# The runtime-stage image; we can use Debian as the
+# base image since the Conda env also includes Python
+# for us.
+FROM nvidia/cudagl:11.2.0-devel-ubuntu20.04
 
-# Install challenge specific habitat-lab
-RUN git clone --branch stable https://github.com/facebookresearch/habitat-lab.git
-RUN /bin/bash -c ". activate habitat; cd habitat-lab; pip install -e ."
+# Copy /venv from the previous stage:
+COPY --from=build /venv /venv
+COPY --from=build /opt/conda/ /opt/conda/
 
-# Silence habitat-sim logs
-ENV GLOG_minloglevel=2
-ENV MAGNUM_LOG="quiet"
+# add /venv to Path for access to python and pip
+ENV PATH="/venv/bin:/opt/conda/bin/:$PATH"
+
+WORKDIR "/habitat-lab"
+COPY . .
+RUN pip install -e .
