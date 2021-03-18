@@ -1252,7 +1252,7 @@ _C.TASK.OBJECT_TO_GOAL_DISTANCE.TYPE = "ObjectToGoalDistance"
 _C.TASK.AGENT_TO_OBJECT_DISTANCE = CN()
 _C.TASK.AGENT_TO_OBJECT_DISTANCE.TYPE = "AgentToObjectDistance"
 
-from habitat.config.default import CN, Config
+from habitat.config.default import Config
 
 # %%
 # @title Define `RearrangementTask` by extending `NavigationTask`
@@ -1389,14 +1389,11 @@ with habitat.Env(config) as env:
 # @markdown - The agent gets a slack penalty of -0.01 for every action it takes in the environment.
 # @markdown - Finally the agent gets a large success reward when the episode is completed successfully.
 
-from typing import Optional, Type
+from typing import Optional
 
-import numpy as np
-
-import habitat
 from habitat import Config, Dataset
-from habitat_baselines.common.baseline_registry import baseline_registry
-from habitat_baselines.common.environments import NavRLEnv
+from habitat_environments.baseline_registry import baseline_registry
+from habitat_environments.environments import NavRLEnv
 
 
 @baseline_registry.register_env(name="RearrangementRLEnv")
@@ -1565,15 +1562,14 @@ class RearrangementRLEnv(NavRLEnv):
 # %%
 import os
 import time
-from typing import Any, Dict, List, Optional
+from typing import List
 
-import numpy as np
 from torch.optim.lr_scheduler import LambdaLR
 
 from habitat import Config, logger
 from habitat.utils.visualizations.utils import observations_to_image
-from habitat_baselines.common.baseline_registry import baseline_registry
-from habitat_baselines.common.environments import get_env_class
+from habitat_environments.baseline_registry import baseline_registry
+from habitat_environments.environments import get_env_class
 from habitat_baselines.common.tensorboard_utils import TensorboardWriter
 from habitat_baselines.rl.models.rnn_state_encoder import (
     build_rnn_state_encoder,
@@ -2004,7 +2000,6 @@ import numpy as np
 import torch
 
 import habitat
-from habitat import Config
 from habitat_baselines.config.default import get_config as get_baseline_config
 
 baseline_config = get_baseline_config(

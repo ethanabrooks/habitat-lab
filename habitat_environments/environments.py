@@ -14,7 +14,7 @@ from typing import Optional, Type
 
 import habitat
 from habitat import Config, Dataset
-from habitat_baselines.common.baseline_registry import baseline_registry
+from habitat_environments.baseline_registry import baseline_registry
 
 
 def get_env_class(env_name: str) -> Type[habitat.RLEnv]:

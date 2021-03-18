@@ -11,7 +11,7 @@ import numpy as np
 import torch
 
 from habitat.config import Config
-from habitat_baselines.common.baseline_registry import baseline_registry
+from habitat_environments.baseline_registry import baseline_registry
 from habitat_baselines.config.default import get_config
 
 
