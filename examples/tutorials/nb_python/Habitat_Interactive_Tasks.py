@@ -1392,8 +1392,8 @@ with habitat.Env(config) as env:
 from typing import Optional
 
 from habitat import Config, Dataset
-from environments.baseline_registry import baseline_registry
-from environments.environments import NavRLEnv
+from habitat_environments.baseline_registry import baseline_registry
+from habitat_environments.environments import NavRLEnv
 
 
 @baseline_registry.register_env(name="RearrangementRLEnv")
@@ -1568,8 +1568,8 @@ from torch.optim.lr_scheduler import LambdaLR
 
 from habitat import Config, logger
 from habitat.utils.visualizations.utils import observations_to_image
-from environments.baseline_registry import baseline_registry
-from environments.environments import get_env_class
+from habitat_environments.baseline_registry import baseline_registry
+from habitat_environments.environments import get_env_class
 from habitat_baselines.common.tensorboard_utils import TensorboardWriter
 from habitat_baselines.rl.models.rnn_state_encoder import (
     build_rnn_state_encoder,
@@ -1591,7 +1591,7 @@ def construct_envs(
     each individual env, grouped by scenes.
 
     :param config: configs that contain num_processes as well as information
-    :param necessary to create individual environments.
+    :param necessary to create individual habitat_environments.
     :param env_class: class type of the envs to be created.
     :param workers_ignore_signals: Passed to :ref:`habitat.VectorEnv`'s constructor
 

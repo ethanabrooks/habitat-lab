@@ -186,7 +186,7 @@ class RolloutStorage:
     def recurrent_generator(self, advantages, num_mini_batch) -> TensorDict:
         num_environments = advantages.size(1)
         assert num_environments >= num_mini_batch, (
-            "Trainer requires the number of environments ({}) "
+            "Trainer requires the number of habitat_environments ({}) "
             "to be greater than or equal to the number of "
             "trainer mini batches ({}).".format(
                 num_environments, num_mini_batch
@@ -194,7 +194,7 @@ class RolloutStorage:
         )
         if num_environments % num_mini_batch != 0:
             warnings.warn(
-                "Number of environments ({}) is not a multiple of the"
+                "Number of habitat_environments ({}) is not a multiple of the"
                 " number of mini batches ({}).  This results in mini batches"
                 " of different sizes, which can harm training performance.".format(
                     num_environments, num_mini_batch

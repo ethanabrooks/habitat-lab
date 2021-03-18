@@ -24,7 +24,7 @@ from habitat.tasks.nav.nav import (
     ProximitySensor,
 )
 from habitat.tasks.nav.object_nav_task import ObjectGoalSensor
-from environments.baseline_registry import baseline_registry
+from habitat_environments.baseline_registry import baseline_registry
 from habitat_baselines.rl.ddppo.policy import resnet
 from habitat_baselines.rl.ddppo.policy.running_mean_and_var import (
     RunningMeanAndVar,

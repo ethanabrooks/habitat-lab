@@ -5,7 +5,7 @@
 # LICENSE file in the root directory of this source tree.
 
 r"""BaselineRegistry is extended from habitat.Registry to provide
-registration for trainer and environments, while keeping Registry
+registration for trainer and habitat_environments, while keeping Registry
 in habitat core intact.
 
 Import the baseline registry object using

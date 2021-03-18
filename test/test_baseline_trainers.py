@@ -21,7 +21,7 @@ try:
     import torch.distributed
 
     from habitat_baselines.common.base_trainer import BaseRLTrainer
-    from environments.baseline_registry import baseline_registry
+    from habitat_environments.baseline_registry import baseline_registry
     from habitat_baselines.config.default import get_config
     from habitat_baselines.run import execute_exp, run_exp
     from habitat_baselines.utils.common import batch_obs

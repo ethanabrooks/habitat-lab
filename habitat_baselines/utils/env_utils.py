@@ -43,7 +43,7 @@ def construct_envs(
     each individual env, grouped by scenes.
 
     :param config: configs that contain num_environments as well as information
-    :param necessary to create individual environments.
+    :param necessary to create individual habitat_environments.
     :param env_class: class type of the envs to be created.
     :param workers_ignore_signals: Passed to :ref:`habitat.VectorEnv`'s constructor
 
@@ -66,7 +66,7 @@ def construct_envs(
 
         if len(scenes) < num_environments:
             raise RuntimeError(
-                "reduce the number of environments as there "
+                "reduce the number of habitat_environments as there "
                 "aren't enough number of scenes.\n"
                 "num_environments: {}\tnum_scenes: {}".format(
                     num_environments, len(scenes)

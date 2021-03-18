@@ -203,7 +203,7 @@ class Env:
         self._episode_over = False
 
     def reset(self) -> Observations:
-        r"""Resets the environments and returns the initial observations.
+        r"""Resets the habitat_environments and returns the initial observations.
 
         :return: initial observations from the environment.
         """
@@ -314,7 +314,7 @@ class RLEnv(gym.Env):
     r"""Reinforcement Learning (RL) environment class which subclasses ``gym.Env``.
 
     This is a wrapper over :ref:`Env` for RL users. To create custom RL
-    environments users should subclass `RLEnv` and define the following
+    habitat_environments users should subclass `RLEnv` and define the following
     methods: :ref:`get_reward_range()`, :ref:`get_reward()`,
     :ref:`get_done()`, :ref:`get_info()`.
 

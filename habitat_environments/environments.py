@@ -4,9 +4,9 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 r"""
-This file hosts task-specific or trainer-specific environments for trainers.
-All environments here should be a (direct or indirect ) subclass of Env class
-in habitat. Customized environments should be registered using
+This file hosts task-specific or trainer-specific habitat_environments for trainers.
+All habitat_environments here should be a (direct or indirect ) subclass of Env class
+in habitat. Customized habitat_environments should be registered using
 ``@baseline_registry.register_env(name="myEnv")` for reusability
 """
 
@@ -14,7 +14,7 @@ from typing import Optional, Type
 
 import habitat
 from habitat import Config, Dataset
-from environments.baseline_registry import baseline_registry
+from habitat_environments.baseline_registry import baseline_registry
 
 
 def get_env_class(env_name: str) -> Type[habitat.RLEnv]:

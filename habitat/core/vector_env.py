@@ -125,7 +125,7 @@ class VectorEnv:
     training and evaluation.
 
 
-    All the environments are synchronized on step and reset methods.
+    All the habitat_environments are synchronized on step and reset methods.
     """
 
     observation_spaces: List[spaces.Dict]
@@ -154,7 +154,7 @@ class VectorEnv:
             :ref:`_make_env_fn`.
         :param auto_reset_done: automatically reset the environment when
             done. This functionality is provided for seamless training
-            of vectorized environments.
+            of vectorized habitat_environments.
         :param multiprocessing_start_method: the multiprocessing method used to
             spawn worker processes. Valid methods are
             :py:`{'spawn', 'forkserver', 'fork'}`; :py:`'forkserver'` is the
@@ -167,7 +167,7 @@ class VectorEnv:
 
         assert (
             env_fn_args is not None and len(env_fn_args) > 0
-        ), "number of environments to be created should be greater than 0"
+        ), "number of habitat_environments to be created should be greater than 0"
 
         self._num_envs = len(env_fn_args)
 
@@ -207,7 +207,7 @@ class VectorEnv:
 
     @property
     def num_envs(self):
-        r"""number of individual environments."""
+        r"""number of individual habitat_environments."""
         return self._num_envs - len(self._paused)
 
     @staticmethod
@@ -373,7 +373,7 @@ class VectorEnv:
         return results
 
     def reset(self):
-        r"""Reset all the vectorized environments
+        r"""Reset all the vectorized habitat_environments
 
         :return: list of outputs from the reset method of envs.
         """
@@ -419,7 +419,7 @@ class VectorEnv:
         return self.wait_step_at(index_env)
 
     def async_step(self, data: List[Union[int, str, Dict[str, Any]]]) -> None:
-        r"""Asynchronously step in the environments.
+        r"""Asynchronously step in the habitat_environments.
 
         :param data: list of size _num_envs containing keyword arguments to
             pass to :ref:`step` method for each Environment. For example,
@@ -431,13 +431,13 @@ class VectorEnv:
 
     @profiling_wrapper.RangeContext("wait_step")
     def wait_step(self) -> List[Any]:
-        r"""Wait until all the asynchronized environments have synchronized."""
+        r"""Wait until all the asynchronized habitat_environments have synchronized."""
         return [
             self.wait_step_at(index_env) for index_env in range(self.num_envs)
         ]
 
     def step(self, data: List[Union[int, str, Dict[str, Any]]]) -> List[Any]:
-        r"""Perform actions in the vectorized environments.
+        r"""Perform actions in the vectorized habitat_environments.
 
         :param data: list of size _num_envs containing keyword arguments to
             pass to :ref:`step` method for each Environment. For example,
@@ -475,7 +475,7 @@ class VectorEnv:
         :param index: which env to pause. All indexes after this one will be
             shifted down by one.
 
-        This is useful for not needing to call steps on all environments when
+        This is useful for not needing to call steps on all habitat_environments when
         only some are active (for example during the last episodes of running
         eval episodes).
         """
@@ -544,7 +544,7 @@ class VectorEnv:
     def render(
         self, mode: str = "human", *args, **kwargs
     ) -> Union[np.ndarray, None]:
-        r"""Render observations from all environments in a tiled image."""
+        r"""Render observations from all habitat_environments in a tiled image."""
         for write_fn in self._connection_write_fns:
             write_fn((RENDER_COMMAND, (args, {"mode": "rgb", **kwargs})))
         images = [read_fn() for read_fn in self._connection_read_fns]
