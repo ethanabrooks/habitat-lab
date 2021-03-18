@@ -12,7 +12,7 @@ from torch.utils.data import DataLoader
 
 from habitat import logger
 from habitat_baselines.common.base_il_trainer import BaseILTrainer
-from habitat_baselines.common.baseline_registry import baseline_registry
+from environments.baseline_registry import baseline_registry
 from habitat_baselines.common.tensorboard_utils import TensorboardWriter
 from habitat_baselines.il.data.eqa_cnn_pretrain_data import (
     EQACNNPretrainDataset,

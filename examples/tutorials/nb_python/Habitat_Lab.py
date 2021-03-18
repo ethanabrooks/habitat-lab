@@ -61,7 +61,7 @@ from habitat.core.logging import logger
 from habitat.core.registry import registry
 from habitat.sims.habitat_simulator.actions import HabitatSimActions
 from habitat.tasks.nav.nav import NavigationTask
-from habitat_baselines.common.baseline_registry import baseline_registry
+from environments.baseline_registry import baseline_registry
 from habitat_baselines.config.default import get_config as get_baselines_config
 
 # %%

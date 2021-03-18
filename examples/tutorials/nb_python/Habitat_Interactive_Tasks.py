@@ -1392,7 +1392,7 @@ with habitat.Env(config) as env:
 from typing import Optional
 
 from habitat import Config, Dataset
-from habitat_baselines.common.baseline_registry import baseline_registry
+from environments.baseline_registry import baseline_registry
 from environments.environments import NavRLEnv
 
 
@@ -1568,7 +1568,7 @@ from torch.optim.lr_scheduler import LambdaLR
 
 from habitat import Config, logger
 from habitat.utils.visualizations.utils import observations_to_image
-from habitat_baselines.common.baseline_registry import baseline_registry
+from environments.baseline_registry import baseline_registry
 from environments.environments import get_env_class
 from habitat_baselines.common.tensorboard_utils import TensorboardWriter
 from habitat_baselines.rl.models.rnn_state_encoder import (

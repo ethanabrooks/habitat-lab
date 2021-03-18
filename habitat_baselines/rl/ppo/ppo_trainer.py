@@ -22,7 +22,7 @@ from habitat import Config, VectorEnv, logger
 from habitat.utils import profiling_wrapper
 from habitat.utils.visualizations.utils import observations_to_image
 from habitat_baselines.common.base_trainer import BaseRLTrainer
-from habitat_baselines.common.baseline_registry import baseline_registry
+from environments.baseline_registry import baseline_registry
 from environments.environments import get_env_class
 from habitat_baselines.common.obs_transformers import (
     apply_obs_transforms_batch,
