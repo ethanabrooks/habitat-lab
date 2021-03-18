@@ -162,8 +162,9 @@ _C.ORBSLAM2.NEXT_WAYPOINT_TH = 0.5
 _C.ORBSLAM2.NUM_ACTIONS = 3
 _C.ORBSLAM2.DIST_TO_STOP = 0.05
 _C.ORBSLAM2.PLANNER_MAX_STEPS = 500
-_C.ORBSLAM2.DEPTH_DENORM = get_task_config().SIMULATOR.DEPTH_SENSOR.MAX_DEPTH
-# -----------------------------------------------------------------------------
+_C.ORBSLAM2.DEPTH_DENORM = (
+    get_task_config().SIMULATOR.DEPTH_SENSOR.MAX_DEPTH
+)  # -----------------------------------------------------------------------------
 # PROFILING
 # -----------------------------------------------------------------------------
 _C.PROFILING = CN()
