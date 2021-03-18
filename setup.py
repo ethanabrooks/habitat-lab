@@ -12,8 +12,9 @@ import setuptools
 from setuptools.command.develop import develop as DefaultDevelopCommand
 from setuptools.command.install import install as DefaultInstallCommand
 
+from habitat.version import VERSION  # isort:skip noqa
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "habitat"))
-from version import VERSION  # isort:skip noqa
 
 
 with open("README.md", encoding="utf8") as f:
@@ -94,7 +95,7 @@ if __name__ == "__main__":
         author=AUTHOR,
         license=LICENSE,
         setup_requires=["pytest-runner"],
-        tests_require=["pytest-cov", "pytest-mock", "pytest"],
+        tests_require=["pytest-cov", "pytest-mock", "pytest", "tensorboard"],
         include_package_data=True,
         cmdclass={"install": InstallCommand, "develop": DevelopCommand},
     )

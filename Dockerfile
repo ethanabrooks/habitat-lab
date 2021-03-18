@@ -43,4 +43,12 @@ COPY --from=build /opt/conda/ /opt/conda/
 ENV PATH="/venv/bin:/opt/conda/bin/:$PATH"
 
 WORKDIR "/habitat-lab"
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+COPY habitat habitat
+COPY README.md  README.md 
+COPY LICENSE  LICENSE 
+COPY setup.py .
+RUN python setup.py develop --all
+
 COPY . .
