@@ -42,21 +42,18 @@ class NavRLEnv(habitat.RLEnv):
         self._previous_action = None
 
         # Config the dataset with given scene and object_category
-        # dataset_config = config.DATASET
-        # dataset_config.DATA_PATH = "data/datasets/train/content/%s.json.gz" % (
-        # scene_id
-        # )
-        # dataset = habitat.make_dataset(
-        # id_dataset=dataset_config.TYPE, config=dataset_config
-        # )
-        # dataset.episodes = [
-        # ep
-        # for ep in dataset.episodes
-        # if ep.object_category == object_category
-        # ]
+        dataset = habitat.make_dataset(
+            id_dataset=config.DATASET.TYPE, config=config.DATASET
+        )
+        dataset.episodes = [
+            ep
+            for ep in dataset.episodes
+            if ep.object_category == config.TASK.OBJECT_CATEGORY
+        ]
         config.freeze()
 
         super().__init__(config)
+        breakpoint()
         # self.observation_space = Box(
         # low=0,
         # high=255,
