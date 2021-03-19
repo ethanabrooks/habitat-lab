@@ -102,6 +102,7 @@ class Benchmark:
                     )
                 ).SerializedEntity
             )
+            breakpoint()
 
             for m, v in metrics["metrics"].items():
                 agg_metrics[m] += v
