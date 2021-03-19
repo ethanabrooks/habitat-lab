@@ -51,4 +51,6 @@ COPY LICENSE  LICENSE
 COPY setup.py .
 RUN python setup.py develop --all
 
+RUN pip install ipdb
+ENV PYTHONBREAKPOINT=ipdb.set_trace
 COPY . .
