@@ -23,6 +23,17 @@ from habitat.tasks import make_task
 from habitat.utils import profiling_wrapper
 
 
+def initialize_on_attribute_error(method):
+    def wrapped(self, *args, **kwargs):
+        try:
+            return method(self, *args, **kwargs)
+        except AttributeError:
+            self.initialize()
+            return method(self, *args, **kwargs)
+
+    return wrapped
+
+
 class Env:
     r"""Fundamental environment class for :ref:`habitat`.
 
@@ -66,17 +77,19 @@ class Env:
             information. Can be defined as :py:`None` in which case
             ``_episodes`` should be populated from outside.
         """
-
         assert config.is_frozen(), (
             "Freeze the config before creating the "
             "environment, use config.freeze()."
         )
         self._config = config
         self._dataset = dataset
+
+    def initialize(self):
         self._current_episode_index = None
-        if self._dataset is None and config.DATASET.TYPE:
+        if self._dataset is None and self._config.DATASET.TYPE:
             self._dataset = make_dataset(
-                id_dataset=config.DATASET.TYPE, config=config.DATASET
+                id_dataset=self._config.DATASET.TYPE,
+                config=self._config.DATASET,
             )
         self._episodes = (
             self._dataset.episodes
@@ -86,9 +99,9 @@ class Env:
         self._current_episode = None
         iter_option_dict = {
             k.lower(): v
-            for k, v in config.ENVIRONMENT.ITERATOR_OPTIONS.items()
+            for k, v in self._config.ENVIRONMENT.ITERATOR_OPTIONS.items()
         }
-        iter_option_dict["seed"] = config.SEED
+        iter_option_dict["seed"] = self._config.SEED
         self._episode_iterator = self._dataset.get_episode_iterator(
             **iter_option_dict
         )
@@ -115,13 +128,6 @@ class Env:
             sim=self._sim,
             dataset=self._dataset,
         )
-        self.observation_space = spaces.Dict(
-            {
-                **self._sim.sensor_suite.observation_spaces.spaces,
-                **self._task.sensor_suite.observation_spaces.spaces,
-            }
-        )
-        self.action_space = self._task.action_space
         self._max_episode_seconds = (
             self._config.ENVIRONMENT.MAX_EPISODE_SECONDS
         )
@@ -131,6 +137,21 @@ class Env:
         self._episode_over = False
 
     @property
+    @initialize_on_attribute_error
+    def observation_space(self):
+        return spaces.Dict(
+            {
+                **self._sim.sensor_suite.observation_spaces.spaces,
+                **self._task.sensor_suite.observation_spaces.spaces,
+            })
+
+    @property
+    @initialize_on_attribute_error
+    def action_space(self):
+        return self._task.action_space
+
+    @property
+    @initialize_on_attribute_error
     def current_episode(self) -> Episode:
         assert self._current_episode is not None
         return self._current_episode
@@ -148,6 +169,7 @@ class Env:
         self._episode_iterator = new_iter
 
     @property
+    @initialize_on_attribute_error
     def episodes(self) -> List[Episode]:
         return self._episodes
 
@@ -159,18 +181,22 @@ class Env:
         self._episodes = episodes
 
     @property
+    @initialize_on_attribute_error
     def sim(self) -> Simulator:
         return self._sim
 
     @property
+    @initialize_on_attribute_error
     def episode_start_time(self) -> Optional[float]:
         return self._episode_start_time
 
     @property
+    @initialize_on_attribute_error
     def episode_over(self) -> bool:
         return self._episode_over
 
     @property
+    @initialize_on_attribute_error
     def task(self) -> EmbodiedTask:
         return self._task
 
@@ -181,6 +207,7 @@ class Env:
         ), "Elapsed seconds requested before episode was started."
         return time.time() - self._episode_start_time
 
+    @initialize_on_attribute_error
     def get_metrics(self) -> Metrics:
         return self._task.measurements.get_metrics()
 
@@ -202,6 +229,7 @@ class Env:
         self._elapsed_steps = 0
         self._episode_over = False
 
+    @initialize_on_attribute_error
     def reset(self) -> Observations:
         r"""Resets the environments and returns the initial observations.
 
@@ -226,6 +254,7 @@ class Env:
 
         return observations
 
+    @initialize_on_attribute_error
     def _update_step_stats(self) -> None:
         self._elapsed_steps += 1
         self._episode_over = not self._task.is_episode_active
@@ -237,6 +266,7 @@ class Env:
         ):
             self.episode_iterator.step_taken()
 
+    @initialize_on_attribute_error
     def step(
         self, action: Union[int, str, Dict[str, Any]], **kwargs
     ) -> Observations:
@@ -297,9 +327,11 @@ class Env:
 
         self._sim.reconfigure(self._config.SIMULATOR)
 
+    @initialize_on_attribute_error
     def render(self, mode="rgb") -> np.ndarray:
         return self._sim.render(mode)
 
+    @initialize_on_attribute_error
     def close(self) -> None:
         self._sim.close()
 
